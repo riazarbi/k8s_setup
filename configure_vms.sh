@@ -28,6 +28,18 @@ do
     ssh -t centos-master@$worker_ip 'sudo bash ~/minio_setup.sh'
 done
 
+# Set up peristent storage
+echo "setting up nfs storage"
+sudo mkdir /data
+sudo mkdir /data/nfs
+sudo chown centos-master:centos-master /data/nfs
+
+sudo sh -c 'echo  /data/nfs '$vm_subnet'\(rw\,no_root_squash\) >> /etc/exports'
+sudo systemctl start rpcbind nfs-server
+sudo systemctl enable rpcbind nfs-server
+sudo systemctl status rpcbind nfs-server
+echo nfs server ip: $nfs_server_ip
+
 # Set up proxy for master to be able to pull from helm
 if [ $add_proxy == "YES" ] ;then
 printf "Setting up .bashrc proxy... \n"

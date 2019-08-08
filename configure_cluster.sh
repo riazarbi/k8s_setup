@@ -224,19 +224,7 @@ EOF
 
 kubectl apply -f traefik-nginx.yaml
 
-# Set up peristent storage
-echo setting up nfs storage
-sudo mkdir /data
-sudo mkdir /data/nfs
-sudo chown centos-master:centos-master /data/nfs
-
-sudo sh -c 'echo  /data/nfs '$vm_subnet'\(rw\,no_root_squash\) >> /etc/exports'
-sudo systemctl start rpcbind nfs-server
-sudo systemctl enable rpcbind nfs-server
-sudo systemctl status rpcbind nfs-server
-
-echo nfs server ip: $nfs_server_ip
-
+echo setting up nfs-backed volume provisioner
 helm install stable/nfs-client-provisioner \
   --set nfs.server=$nfs_server_ip \
   --set nfs.path=/data/nfs  \
@@ -304,7 +292,7 @@ EOF
 helm upgrade --install jupyterhub jupyterhub/jupyterhub \
    --namespace=jupyterhub \
    --timeout=36000 \
-   --version=0.9-dcde99a \ 
+   --version=0.9-dcde99a \
    --values jupyterhub-deploy.yaml
 # or 0.9-dcde99a 11 Jul 2019
 

@@ -1,7 +1,7 @@
 source set_variables.sh
 
 if [ $add_proxy == "YES" ] ;then
-printf "Setting up yum proxy... \n"
+printf "Setting up yum proxy... \n\n"
 # Change /etc/yum.conf
 cat > /etc/yum.conf <<EOF
 [main]
@@ -19,26 +19,26 @@ proxy=$HTTP_PROXY
 EOF
 fi
 
-echo adding host ip to /etc/hosts
+printf "\n Adding hostname and IP to /etc/hosts... \n\n"
 echo $(hostname -I | cut -d" " -f 1) $(hostname) >> /etc/hosts
 
-echo setting up docker bridge network
+printf "\n Setting up docker bridge network... \n\n"
 ip link add name docker0 type bridge
 ip addr add dev docker0 172.17.0.1/16
 
-echo disabling firewall
+printf "\n Disabling firewall... \n\n"
 systemctl stop firewalld
 systemctl disable firewalld
 
-echo turning off swap
+printf "\n Turning off swap... \n\n"
 swapoff -a
 sed -i.bak -r 's/(.+ swap .+)/#\1/' /etc/fstab
 
-echo turning off selinux
+printf "\n Turning off selinux... \n\n"
 setenforce 0
 sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 
-echo updating and installing convenience packages
+printf "\n Updating and installing convenience packages... \n\n"
 yum -y update 
 yum -y upgrade
 yum install -y epel-release
@@ -53,24 +53,24 @@ yum install -y nano \
                bash-completion \
                wget
 
-echo setting up cockpit
+printf "\n Setting up cockpit... \n\n"
 mkdir /etc/systemd/system/cockpit.socket.d/
 echo [Socket] > /etc/systemd/system/cockpit.socket.d/listen.conf
 echo ListenStream= >> /etc/systemd/system/cockpit.socket.d/listen.conf
 echo ListenStream=8999 >> /etc/systemd/system/cockpit.socket.d/listen.conf
 
-echo enabling cockpit
+printf "\n Enabling cockpit... \n\n"
 systemctl daemon-reload
 systemctl start cockpit
 systemctl enable --now cockpit
 systemctl enable --now cockpit.socket
 
-echo setting up network clock
+printf "\n Setting up network clock... \n\n"
 yum install -y ntp ntpdate
 systemctl start ntpd
 systemctl enable ntpd
 
-echo installing docker-ce
+printf "\n Installing docker-ce... \n\n"
 yum remove docker \
 docker-client \
 docker-client-latest \
@@ -110,7 +110,7 @@ EOF
 mkdir -p /etc/systemd/system/docker.service.d
 
 if [ $add_proxy == "YES" ] ;then
-printf "Setting up docker proxy... \n"
+printf "Setting up docker proxy... \n\n"
 # Docker use corporate proxy
 cat > /etc/systemd/system/docker.service.d/http_proxy.conf <<EOF
 [Service]
@@ -119,15 +119,16 @@ Environment="HTTPS_PROXY=$HTTPS_PROXY"
 EOF
 fi
 
-echo enabling docker
+printf "\n Enabling docker... \n\n"
 systemctl daemon-reload
 systemctl restart docker
 systemctl enable docker
 systemctl status docker
 
+printf "\n Adding user to docker group... \n\n"
 usermod -aG docker centos-master
 
-echo creating minio setup script - will only be executed on workers
+printf "\n Creating minio script (will only be run on workers)... \n\n"
 # CREATE MINIO SCRIPT
 cat > minio_setup.sh <<EOF
 docker run -d
@@ -153,8 +154,10 @@ do
   done
 done
 cat minio_setup.sh | tr '\n' ' ' 2>&1 | tee minio_setup.sh
+sudo sh -c 'echo "" >> minio_setup.sh'
+sudo sh -c 'echo "curl --head http://192.168.101.95:9000/minio/health/ready" >> minio_setup.sh'
 
-echo installing kubernetes
+printf "\n Installing kubernetes components... \n\n"
 cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
@@ -167,10 +170,10 @@ EOF
 
 yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
 
-echo enabling kubelet
+printf "\n Enabling kubelet... \n\n"
 systemctl enable --now kubelet
 
-echo taking care of some networking gotchas
+printf "\n Taking care of some networking gotchas... \n\n"
 cat <<EOF >  /etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
@@ -186,6 +189,6 @@ sudo sysctl net.bridge.bridge-nf-call-iptables=1
 
 sudo systemctl restart network
 
-printf "\n  ALL DONE WITH THIS ONE <=====> ☁ ▅▒░☼‿☼░▒▅ ☁\n \n"
-
+printf "\n  ALL DONE WITH CONFIGURING $(hostname) "
+printf "\n              ☁ ▅▒░☼‿☼░▒▅ ☁         \n \n"
 

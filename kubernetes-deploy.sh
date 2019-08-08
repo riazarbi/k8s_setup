@@ -1,4 +1,5 @@
 sudo echo
+
 printf "\n !!! Loading important variables... \n\n"
 sleep 1
 source set_variables.sh
@@ -29,6 +30,7 @@ scp configure_cluster.sh centos-master@$master_ip:~/
 
 printf "\n !!! Remotely executing setup scripts... \n\n"
 ssh -t centos-master@$master_ip 'bash ~/configure_vms.sh'
-#ssh -t centos-master@$master_ip 'bash ~/prepare_cluster.sh'
-#ssh -t centos-master@$master_ip 'bash ~/configure_cluster.sh'
+ssh -t centos-master@$master_ip 'bash ~/prepare_cluster.sh'
+sleep 600
+ssh -t centos-master@$master_ip 'bash ~/configure_cluster.sh'
 
