@@ -22,11 +22,20 @@ sudo bash vm_setup.sh
 # Set up workers for kubernetes and install minio server
 for worker_ip in $worker_ips
 do
-    scp vm_setup.sh centos-master@$worker_ip:~/
-    scp set_variables.sh centos-master@$worker_ip:~/
-    ssh -t centos-master@$worker_ip 'sudo bash ~/vm_setup.sh'
-    ssh -t centos-master@$worker_ip 'sudo bash ~/minio_setup.sh'
+    scp vm_setup.sh centos-master@$worker_ip:~/ 
+    scp set_variables.sh centos-master@$worker_ip:~/ 
 done
+
+for worker_ip in $worker_ips
+do
+    ssh -t centos-master@$worker_ip 'sudo bash ~/vm_setup.sh' 
+done
+
+for worker_ip in $worker_ips
+do
+    ssh -t centos-master@$worker_ip 'sudo bash ~/minio_setup.sh' 
+done
+curl --head http://$minio_url/minio/health/ready
 
 # Set up peristent storage
 echo "setting up nfs storage"
@@ -43,9 +52,10 @@ echo nfs server ip: $nfs_server_ip
 # Set up proxy for master to be able to pull from helm
 if [ $add_proxy == "YES" ] ;then
 printf "Setting up .bashrc proxy... \n"
-echo http_proxy=$http_proxy >> ~/.bashrc
-echo HTTP_PROXY=$HTTP_PROXY >> ~/.bashrc
-echo HTTPS_PROXY=$HTTPS_PROXY >> ~/.bashrc
-echo https_proxy=$https_proxy >> ~/.bashrc
-echo no_proxy=$no_proxy >> ~/.bashrc
+echo export http_proxy=$http_proxy >> ~/.bashrc
+echo export HTTP_PROXY=$HTTP_PROXY >> ~/.bashrc
+echo export HTTPS_PROXY=$HTTPS_PROXY >> ~/.bashrc
+echo export https_proxy=$https_proxy >> ~/.bashrc
+echo export no_proxy=$no_proxy >> ~/.bashrc
+echo export NO_PROXY=$no_proxy >> ~/.bashrc
 fi

@@ -128,6 +128,8 @@ systemctl status docker
 printf "\n Adding user to docker group... \n\n"
 usermod -aG docker centos-master
 
+printf "\n Creating minio directories (will only be used on workers)... \n"
+mkdir -p $minio_host_dirs
 printf "\n Creating minio script (will only be run on workers)... \n\n"
 # CREATE MINIO SCRIPT
 cat > minio_setup.sh <<EOF
@@ -136,26 +138,22 @@ docker run -d
 -p 9000:9000 \
 --hostname minio1 \
 --name minio \
--e "MINIO_ACCESS_KEY="$minio_key \
--e "MINIO_SECRET_KEY="$minio_secret \
+-e "MINIO_ACCESS_KEY=$minio_key" \
+-e "MINIO_SECRET_KEY=$minio_secret" \
 -v /data/minio:/data \
 minio/minio server
 EOF
 for worker_ip in $worker_ips
 do
-  for minio_mount in $minio_mounts
-  do
   if [ $(hostname -I | cut -d" " -f 1) == $worker_ip ]
   then
-   echo http://minio1$minio_mount >> minio_setup.sh
+   echo http://minio1$minio_mounts >> minio_setup.sh
   else
-    echo http://$worker_ip$minio_mount >> minio_setup.sh
+    echo http://$worker_ip$minio_mounts >> minio_setup.sh
   fi
-  done
 done
 cat minio_setup.sh | tr '\n' ' ' 2>&1 | tee minio_setup.sh
 sudo sh -c 'echo "" >> minio_setup.sh'
-sudo sh -c 'echo "curl --head http://192.168.101.95:9000/minio/health/ready" >> minio_setup.sh'
 
 printf "\n Installing kubernetes components... \n\n"
 cat <<EOF > /etc/yum.repos.d/kubernetes.repo

@@ -13,10 +13,7 @@ done
 printf "\n !!! The NFS server will share on this subnet: \n"
 sudo sh -c 'echo  /data/nfs '$vm_subnet' \(rw\,no_root_squash\)'
 
-printf "\n !!! This is the minio creation command that will be run on each worker: \n"
-
-
-printf "\n !!! Script assumes that the NFS client is on the master."
+printf "\n !!! Script assumes that the NFS server is on the master."
 printf "\n     This is the helm script that will be run: \n"
 echo helm install stable/nfs-client-provisioner \
   --set nfs.server=$nfs_server_ip \

@@ -3,3 +3,7 @@
 .RData
 .Ruserdata
 *.Rproj
+*.key
+*.crt
+*.bak
+*.gz
