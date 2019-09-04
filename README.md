@@ -2,6 +2,14 @@
 
 This is a set of bash scripts to automatically set up a single-node bare metal kubernetes cluster. 
 
+## Approach
+
+The objective is to have a set of scripts that rely **just on bash** to deploy an on-prem kubernetes cluster. The code is supposed to be readable to a `bash` novice.
+
+## Does this have bugs?
+
+Probably. This code comes with no warranty or guarantees whatsoever. Feel free to create an issue if you find one.
+
 ## Prerequisites
 
 At least two new CentOS installs, with static IP addresses, unique hostnames, and a `sudo` user names `centos-master`.
