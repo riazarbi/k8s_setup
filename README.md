@@ -1,6 +1,6 @@
 # k8s_setup
 
-This is a set of bash scripts to automatically set up a single-node bare metal kubernetes cluster. 
+This is a set of bash scripts to automatically set up a single-master, multi-node bare metal kubernetes cluster. 
 
 ## Approach
 
