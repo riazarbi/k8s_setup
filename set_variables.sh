@@ -48,7 +48,7 @@ workbench_Callback_URL="https://<LOADBALANCER_TRAEFIK_URL>/workbench/hub/oauth_c
 # docker run -it --rm minio/minio && docker image rm minio
 # minio_mounts must be min 4 drives for erasure coding, which is a prerequisite for distributed mode.
 # "/data/dir{1...2}/dir{1...2}" allows us to use 1, 2, 4 or 8 drives for a single minio server by varying our mount points.
-# if we are using 2TB drives, and we have 10 nodes, this gives us a max theoretical capacity of 2x8x10/2=32TB of usable space on 1:1 redundancy.
+# if we are using 2TB drives, and we have 10 nodes, this gives us a max theoretical capacity of 2x8x10/2=80TB of usable space on 1:1 redundancy.
 minio_key=MKQ8KVNEIVNEONVEONVTPM # these are fake don't use them
 minio_secret=hnpovcnqepovnqeo[vn[qonev[nojSrulw+vhmy+g8WMXk3 # these are fake don't use them
 minio_url="http://<RANDOM_WORKER_IP>:9000"
