@@ -26,31 +26,30 @@ singleuser:
   memory:
     limit: 150G
     guarantee: 4G
+  storage:
+    capacity: 200Gi
   profileList:
-    - display_name: "Minimal environment"
-      description: "To avoid too much bells and whistles: Python."
+    - display_name: "Jupyter with python"
+      description: "Create jupyter notebooks with the python kernel. "
       kubespawner_override:
-        image: jupyter/minimal-notebook:58169ec3cfd3
+        image: cityofcapetown/datascience:jupyter-k8s@sha256:d8f5f52d4b2cc4d96fe2b1e08a4494970cb0ea346c2$
         default_url: /lab
-      default: true
-#    - display_name: "Jupyter with python"
-#      description: "Create jupyter notebooks with the python kernel. "
-#      kubespawner_override:
-#        image: cityofcapetown/datascience:jupyter-k8s
-#        default_url: /lab
-#        pullPolicy: Always
-#    - display_name: "Jupyter with R"
-#      description: "Create jupyter notebooks with the R kernel. Also contains a minimal python kernel."
-#      kubespawner_override:
-#        image: riazarbi/r-heavy:latest
-#        default_url: /lab
-#        pullPolicy: Always
-#    - display_name: "RStudio with R"
-#      description: "RStudio development environment. Also contains a minimal python kernel."
-#      kubespawner_override:
-#        image: riazarbi/r-heavy:latest
-#        default_url: /rstudio
-#        pullPolicy: Always
+    - display_name: "Jupyter with R"
+      description: "Create jupyter notebooks with the R kernel. Also contains a minimal python kernel."
+      kubespawner_override:
+        image: riazarbi/r-heavy:latest@sha256:a28d2f6576d6e7df5c546c3547aca827cb679c259868a05cb88950356d$
+        default_url: /lab
+    - display_name: "RStudio with R"
+      description: "RStudio development environment. Also contains a minimal python kernel."
+      kubespawner_override:
+        image: riazarbi/r-heavy:latest@sha256:a28d2f6576d6e7df5c546c3547aca827cb679c259868a05cb88950356d$
+        default_url: /rstudio
+prePuller:
+  continuous:
+    enabled: true
+cull:
+  timeout: 604800
+  every: 86400
 #auth:
 #  type: gitlab
 #  gitlab:
