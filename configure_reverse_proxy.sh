@@ -112,7 +112,7 @@ spec:
         configMap:
           name: traefik-conf
       containers:
-      - image: traefik
+      - image: traefik:v1.7.16
         name: traefik-ingress-lb
         imagePullPolicy: Always
         volumeMounts:
