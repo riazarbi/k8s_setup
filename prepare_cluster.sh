@@ -17,8 +17,7 @@ echo 'source <(kubectl completion bash)' >> ~/.bashrc
 
 # Set up flannel networking
 printf "\n Setting up flannel networking overlay... \n\n"
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/62e44c867a2846fefb68bd5f178daf4da3095ccb/Documentation/kube-flannel.yml 
-
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/2140ac876ef134e0ed5af15c65e414cf26827915/Documentation/kube-flannel.yml
 # Set up cockpit-kubernetes
 printf "\n Installing cockpit kubernetes addon... \n\n"
 sudo yum install -y cockpit-kubernetes
