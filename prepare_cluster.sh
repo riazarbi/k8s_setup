@@ -40,6 +40,6 @@ printf "\n Setting up helm... \n\n"
 curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
 kubectl create serviceaccount -n kube-system tiller
 kubectl create clusterrolebinding tiller-binding --clusterrole=cluster-admin --serviceaccount kube-system:tiller
-helm init --service-account tiller
+helm init --service-account tiller --override spec.selector.matchLabels.'name'='tiller',spec.selector.matchLabels.'app'='helm' --output yaml | sed 's@apiVersion: extensions/v1beta1@apiVersion: apps/v1@' | kubectl apply -f -
 helm repo update
 kubectl --namespace=kube-system patch deployment tiller-deploy --type=json --patch='[{"op": "add", "path": "/spec/template/spec/containers/0/command", "value": ["/tiller", "--listen=localhost:44134"]}]'
