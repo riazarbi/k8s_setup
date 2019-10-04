@@ -3,7 +3,7 @@ source set_variables.sh
 
 # Set up load balancer
 echo setting up load balancer
-kubectl apply -f https://raw.githubusercontent.com/google/metallb/v0.7.3/manifests/metallb.yaml
+kubectl apply -f https://raw.githubusercontent.com/google/metallb/v0.8.1/manifests/metallb.yaml
 
 cat > metallb.yaml <<EOF
 apiVersion: v1
