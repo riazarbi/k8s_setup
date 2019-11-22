@@ -43,3 +43,5 @@ kubectl create clusterrolebinding tiller-binding --clusterrole=cluster-admin --s
 helm init --service-account tiller --override spec.selector.matchLabels.'name'='tiller',spec.selector.matchLabels.'app'='helm' --output yaml | sed 's@apiVersion: extensions/v1beta1@apiVersion: apps/v1@' | kubectl apply -f -
 helm repo update
 kubectl --namespace=kube-system patch deployment tiller-deploy --type=json --patch='[{"op": "add", "path": "/spec/template/spec/containers/0/command", "value": ["/tiller", "--listen=localhost:44134"]}]'
+# Add helm to $PATH
+echo 'PATH=$PATH:/usr/local/bin' >> ~/.bashrc
