@@ -1,3 +1,6 @@
+## Archival notice
+This repo was made before the emergence of tooling for making the provisioning of kubernetes clusters easy. I'm keeping it up mostly for sentimental reasons. If you actually want to set up a kubernetes cluster, use `k3s`, `kind`, or `microk8s`.
+
 # k8s_setup
 
 This is a set of bash scripts to automatically set up a single-master, multi-node bare metal kubernetes cluster. 
